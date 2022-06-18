@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * @author Yaxin
- * @date 2022/6/9 11:29
+ * @date 2022/6/18 9:38
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResIMG {
+public class IMG {
     private String id;
     private String url;
-    private String label;
+    private Map<String, Double> imgInfo;
 }

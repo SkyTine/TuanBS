@@ -1,5 +1,6 @@
 package com.yaxin.tuanbs.service;
 
+import com.yaxin.tuanbs.entity.IMG;
 import com.yaxin.tuanbs.utils.FileUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,28 +29,18 @@ public class FileService {
     @Value("${static.rootURL}")
     private String rootURL;
 
-    @Value("${static.folders.source}")
-    private String sourcePath;
-
-    @Value("${static.folders.res}")
-    private String resPath;
+    @Value("${static.folders.pics}")
+    private String picPath;
 
     @Value("${static.maxImageSize}")
     private Long maxImageSize;
 
-    public String saveSourceIMG(MultipartFile file){
-        return saveIMG(file, sourcePath);
+    public IMG saveIMG(MultipartFile file){
+        return saveFile(file, picPath);
     }
 
-    private String saveIMG(MultipartFile file, String folder){
-        if(!isValidIMG(file)){
-            return null;
-        }
-        return saveFile(file, folder);
-    }
-
-    private boolean isValidIMG(MultipartFile file){
-        if(file.getSize() > maxImageSize){
+    public boolean isValidIMG(MultipartFile file){
+        if(file == null || file.getSize() > maxImageSize){
             return false;
         }
         try {
@@ -64,9 +55,9 @@ public class FileService {
      *
      * @param file 文件
      * @param folder 存入的文件夹名称
-     * @return 存入成功返回可访问的url， 否则返回null
+     * @return 存入成功返回IMG对象(存入了本地path和url)， 否则返回null
      */
-    private String saveFile(MultipartFile file, String folder){
+    private IMG saveFile(MultipartFile file, String folder){
         //存储路径
         String savePath = rootPath + "/" + folder;
         //文件全名
@@ -88,8 +79,11 @@ public class FileService {
             file.transferTo(saveFile);
             //存入成功
             String url = rootURL + "/" + folder + "/" + fileName;
+            System.out.println(savePath);
             System.out.println(url);
-            return url;
+            IMG img = new IMG();
+            img.setUrl(url);
+            return img;
         }catch (Exception e){
             e.printStackTrace();
             return null;

@@ -1,12 +1,18 @@
 package com.yaxin.tuanbs.controller;
 
 import com.yaxin.tuanbs.entity.Record;
+import com.yaxin.tuanbs.service.DomainService;
 import com.yaxin.tuanbs.service.FileService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
 
 /**
  * @author Yaxin
@@ -19,13 +25,20 @@ public class imgController {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private DomainService domainService;
+
     @PostMapping("/domain")
-    public ResponseEntity<Record> domain(@RequestParam String tag, @RequestBody MultipartFile file){
-        System.out.println(tag);
-        System.out.println(file.getSize());
-        String URL = fileService.saveSourceIMG(file);
-        System.out.println(URL);
-        return new ResponseEntity<>(new Record(), HttpStatus.OK);
+    public ResponseEntity<Res> domain(@RequestParam String tag, @RequestParam String type, @RequestBody MultipartFile file){
+//        ResRecord resRecord = new ResRecord();
+        if(!tag.equals("attack") && !tag.equals("defense")){
+            return new ResponseEntity<>(new Res(1001, "error tag!", null), HttpStatus.OK);
+        }
+        if(!fileService.isValidIMG(file)){
+            return new ResponseEntity<>(new Res(1003, "error file!", null), HttpStatus.OK);
+        }
+        System.out.println("running");
+        return new ResponseEntity<>(new Res(1000, "success", domainService.domain(tag, type, file)), HttpStatus.OK);
     }
 
     @RequestMapping("")
@@ -42,4 +55,13 @@ public class imgController {
     public ResponseEntity<String> getProfilePath(){
         return new ResponseEntity<>(fileService.getRootURL(), HttpStatus.OK);
     }
+}
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class Res {
+    int code;
+    String msg;
+    Record record;
 }
