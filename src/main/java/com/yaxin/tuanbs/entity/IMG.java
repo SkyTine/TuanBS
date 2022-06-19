@@ -17,4 +17,11 @@ public class IMG {
     private String id;
     private String url;
     private Map<String, Double> imgInfo;
+
+    @Override
+    public String toString(){
+        return "id: "+ id + "\n" +
+                "url: " + url + "\n" +
+                "imgInfo: " + imgInfo.toString();
+    }
 }

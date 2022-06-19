@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
 /**
  * @author Yaxin
  * @date 2022/6/12 16:35
@@ -33,6 +31,10 @@ public class imgController {
 //        ResRecord resRecord = new ResRecord();
         if(!tag.equals("attack") && !tag.equals("defense")){
             return new ResponseEntity<>(new Res(1001, "error tag!", null), HttpStatus.OK);
+        }
+        System.out.println(tag + " " + type);
+        if(file == null){
+            return new ResponseEntity<>(new Res(1002, "empty file!", null), HttpStatus.OK);
         }
         if(!fileService.isValidIMG(file)){
             return new ResponseEntity<>(new Res(1003, "error file!", null), HttpStatus.OK);
@@ -54,6 +56,11 @@ public class imgController {
     @RequestMapping("/getRootURL")
     public ResponseEntity<String> getProfilePath(){
         return new ResponseEntity<>(fileService.getRootURL(), HttpStatus.OK);
+    }
+
+    @RequestMapping("/getLocalPath")
+    public ResponseEntity<String> getLocalPath(@RequestParam String url){
+        return new ResponseEntity<>(fileService.getImgPath(url), HttpStatus.OK);
     }
 }
 

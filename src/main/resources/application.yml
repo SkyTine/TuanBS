@@ -22,7 +22,7 @@ logging:
   level:
     com:
       yaxin:
-        regionsensebs:
+        tuanbs:
           mapper: debug
   file:
     name: tuan.log
@@ -31,17 +31,18 @@ logging:
       max-history: 2
       clean-history-on-start: true
 
-
 #分页框架
-#pagehelper:
-#  auto-dialect: true #自动适配SQL（我们使用的是mysql）
-#  reasonable: true
-#  support-methods-arguments: true
-#  params: count=countSql
+pagehelper:
+  auto-dialect: true #自动适配SQL（我们使用的是mysql）
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
 static:
   diyPort: 9001
   profile: E:/IDEA_project/tuanstatic
   rootURL: http://172.17.23.203:${static.diyPort}/profile
+  pyscript: E:/IDEA_project/tuanstatic/pyscript
   maxImageSize: 10485760 #10MB
   folders:
     pics: pics

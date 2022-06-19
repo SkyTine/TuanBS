@@ -35,12 +35,16 @@ public class FileService {
     @Value("${static.maxImageSize}")
     private Long maxImageSize;
 
-    public IMG saveIMG(MultipartFile file){
+    /**
+     * @param file 文件
+     * @return 存入成功返回可访问url， 否则返回null
+     */
+    public String saveIMG(MultipartFile file) {
         return saveFile(file, picPath);
     }
 
-    public boolean isValidIMG(MultipartFile file){
-        if(file == null || file.getSize() > maxImageSize){
+    public boolean isValidIMG(MultipartFile file) {
+        if (file.getSize() > maxImageSize) {
             return false;
         }
         try {
@@ -51,13 +55,28 @@ public class FileService {
         return false;
     }
 
+    public String getImgURL(String imgPath) {
+        return getURl(imgPath, picPath);
+    }
+
+    public String getImgPath(String url) {
+        return getLocalPath(url, picPath);
+    }
+
+    private String getURl(String localPath, String folder) {
+        return getRootURL() + "/" + folder + "/" + localPath.substring(localPath.lastIndexOf("/") + 1);
+    }
+
+    private String getLocalPath(String url, String folder) {
+        return getRootPath() + "/" + folder + "/" + url.substring(url.lastIndexOf("/") + 1);
+    }
+
     /**
-     *
-     * @param file 文件
+     * @param file   文件
      * @param folder 存入的文件夹名称
-     * @return 存入成功返回IMG对象(存入了本地path和url)， 否则返回null
+     * @return 存入成功返回可访问url， 否则返回null
      */
-    private IMG saveFile(MultipartFile file, String folder){
+    private String saveFile(MultipartFile file, String folder) {
         //存储路径
         String savePath = rootPath + "/" + folder;
         //文件全名
@@ -75,16 +94,14 @@ public class FileService {
             targetFile.mkdirs();
         }
         File saveFile = new File(targetFile, fileName);
-        try{
+        try {
             file.transferTo(saveFile);
             //存入成功
             String url = rootURL + "/" + folder + "/" + fileName;
-            System.out.println(savePath);
+            System.out.println(savePath + "/" + fileName);
             System.out.println(url);
-            IMG img = new IMG();
-            img.setUrl(url);
-            return img;
-        }catch (Exception e){
+            return url;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
