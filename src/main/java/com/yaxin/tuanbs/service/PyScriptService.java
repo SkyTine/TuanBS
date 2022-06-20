@@ -1,6 +1,7 @@
 package com.yaxin.tuanbs.service;
 
 import com.yaxin.tuanbs.entity.IMG;
+import com.yaxin.tuanbs.entity.IMGString;
 import com.yaxin.tuanbs.utils.CommandUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,21 +48,28 @@ public class PyScriptService {
     }
 
     public IMG handleRIMG(String sImgPath, String tag, String type, String recordId){
-        String rImgLocalPath = "";
+        //defense 1,2,3都是返回分类结果String，其他的均返回图片路径
+        String resString = "";
         switch (tag){
             case "attack":
-                rImgLocalPath = doAttack(sImgPath, type);
+                resString = doAttack(sImgPath, type);
                 break;
             case "defense":
-                rImgLocalPath = doDefense(sImgPath, type);
+                resString = doDefense(sImgPath, type);
                 break;
             default:
                 log.info("error tag!!!!!!!!");
                 break;
         }
-        System.out.println(rImgLocalPath);
-        String rImgUrl = fileService.getImgURL(rImgLocalPath);
-        return new IMG(recordId, rImgUrl, doClassify(rImgLocalPath));
+        System.out.println(resString);
+        if(tag.equals("defense") && (type.equals("adv_inception_v3") || type.equals("ens3_adv_inception_v3") || type.equals("ens4_adv_inception_v3"))){
+            //这里直接放原图
+            String rImgUrl = fileService.getImgURL(sImgPath);
+            //通过分类信息创建
+            return new IMG(new IMGString(recordId, rImgUrl, resString));
+        }
+        String rImgUrl = fileService.getImgURL(resString);
+        return new IMG(recordId, rImgUrl, doClassify(resString));
     }
 
     /**
@@ -119,10 +127,13 @@ public class PyScriptService {
      * 防御（防御图片是由模型保存的）
      * @param attackedImgPath 一张被攻击的图片
      * @param type 防御类型
-     * @return 返回防御图片路径
+     * @return 返回防御图片路径或者图片分类信息(imgInfo)
      */
     public String doDefense(String attackedImgPath, String type){
         String targetDefense;
+        List<String> cmd = new ArrayList<>();
+        List<String> list;
+        cmd.add("python");
         switch (type){
             case "adv_inception_v3":
                 targetDefense = "defense.py";
@@ -138,10 +149,28 @@ public class PyScriptService {
                 targetDefense = "defense4.py";
                 break;
         }
-        List<String> cmd = new ArrayList<>();
-        cmd.add("python"); cmd.add(pyScriptRoot + "/" + targetDefense);
+        cmd.add(pyScriptRoot + "/" + targetDefense);
         cmd.add(attackedImgPath);
-        List<String> list = CommandUtil.executeCommand(cmd.toArray(new String[0]), RES_LINES);
+        switch (type){
+            case "adv_inception_v3":
+            case "ens3_adv_inception_v3":
+            case "ens4_adv_inception_v3":
+                list = CommandUtil.executeCommand(cmd.toArray(new String[0]), CATEGORY);
+                break;
+            case "fuzzy_integration":
+            default:
+                list = CommandUtil.executeCommand(cmd.toArray(new String[0]), RES_LINES);
+                break;
+        }
+        if(list != null && list.size() == 5){
+            StringBuilder sb = new StringBuilder();
+            for (String s: list) {
+                String[] split = s.split("/");
+                String[] names = split[0].split(", ");
+                sb.append(names[0]); sb.append("/"); sb.append(split[1]); sb.append("#");
+            }
+            return sb.toString();
+        }
         if(list == null || !new File(list.get(0)).exists()){
             return null;
         }
