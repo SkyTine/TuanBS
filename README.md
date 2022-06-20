@@ -1,5 +1,6 @@
 # TuanBS_API_Refrence
-
+---
+> Tips: python scripts are not in there
 ---
 
 ## **baseUrl：{serverIp}:{serverPort}/TuanAPI**
