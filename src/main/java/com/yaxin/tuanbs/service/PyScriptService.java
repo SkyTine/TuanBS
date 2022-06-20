@@ -122,18 +122,20 @@ public class PyScriptService {
      * @return 返回防御图片路径
      */
     public String doDefense(String attackedImgPath, String type){
-        String targetDefense = "defense.py";
+        String targetDefense;
         switch (type){
             case "adv_inception_v3":
-                targetDefense = "defense2.py";
+                targetDefense = "defense.py";
                 break;
             case "ens3_adv_inception_v3":
-                targetDefense = "defense3.py";
+                targetDefense = "defense2.py";
                 break;
             case "ens4_adv_inception_v3":
-                targetDefense = "defense4.py";
+                targetDefense = "defense3.py";
                 break;
+            case "fuzzy_integration":
             default:
+                targetDefense = "defense4.py";
                 break;
         }
         List<String> cmd = new ArrayList<>();
