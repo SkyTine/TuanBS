@@ -229,3 +229,62 @@
       }
   ]
   ```
+  ---
+
+### **API4：**
+
+* 路由：/getRecentResRecords
+
+* 概述：对已上传于服务器上的图片进行处理，返回处理结果
+
+* 方法：get
+
+* 参数及说明：无
+
+* 返回信息(JSON)：
+
+  eg:
+
+  ```json
+  [
+      {
+          "id": "2206200839197eb7d8602879",
+          "tag": "attack",
+          "type": "attack",
+          "createTime": "2022-06-20 00:00:00",
+          "rimg": {
+              "id": "2206200839197eb7d8602879",
+              "url": "{serverIp}:{serverPort}/profile/pics/attack_0545e131a67c4308a7a97a6cb25512f4.webp",
+              "imgInfo": {
+                  "car wheel": 1.29
+              }
+          }
+      },
+      {
+          "id": "220620085407a945223dde2c",
+          "tag": "attack",
+          "type": "CW",
+          "createTime": "2022-06-20 00:00:00",
+          "rimg": {
+              "id": "220620085407a945223dde2c",
+              "url": "{serverIp}:{serverPort}/profile/pics/attack_CW_attack_0545e131a67c4308a7a97a6cb25512f4.webp",
+              "imgInfo": {
+                  "beach wagon": 5.99
+              }
+          }
+      },
+      {
+          "id": "2206200856044e937d6576d3",
+          "tag": "attack",
+          "type": "FGSM",
+          "createTime": "2022-06-20 00:00:00",
+          "rimg": {
+              "id": "2206200856044e937d6576d3",
+              "url": "{serverIp}:{serverPort}/profile/pics/attack_FGSM_attack_0545e131a67c4308a7a97a6cb25512f4.webp",
+              "imgInfo": {
+                  "Band Aid": 0.9
+              }
+          }
+      }
+  ]
+  ```
