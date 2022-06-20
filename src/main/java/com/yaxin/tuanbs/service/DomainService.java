@@ -28,16 +28,52 @@ public class DomainService {
     @Autowired
     private PyScriptService pyScriptService;
 
+    @Autowired
+    private RecordService recordService;
+
+    @Autowired
+    private IMGService imgService;
+
+    /**
+     * 上传图片做处理
+     * @param tag 攻击或防御
+     * @param type 类型
+     * @param file 待处理图片
+     * @return 存入数据库的record
+     */
     public Record domain(String tag, String type, MultipartFile file){
         //新建Record
         Record record = new Record(DiyId.getTimeDiyId(), tag, type, new Date());
         //存原图、分类并填充到record
         record.setSIMG(pyScriptService.handleSIMG(file, record.getId()));
         //做处理（攻击或防御）并填充到record
-        String sImgURL = fileService.getImgPath(record.getSIMG().getUrl());
-        record.setRIMG(pyScriptService.handleRIMG(sImgURL, type, record.getId()));
+        String sImgPath = fileService.getImgPath(record.getSIMG().getUrl());
+        record.setRIMG(pyScriptService.handleRIMG(sImgPath, tag, type, record.getId()));
         //然后存入数据库(Record、sIMG、rIMG)
+        recordService.addRecord(record);
         //返回Record
+        return record;
+    }
+
+    /**
+     * 使用服务器图片做处理
+     * @param tag 攻击或防御
+     * @param type 类型
+     * @param attackedImgURL 待处理图片的url
+     * @return 存入数据库的record
+     */
+    public Record domain(String tag, String type, String attackedImgURL){
+        //新建Record
+        Record record = new Record(DiyId.getTimeDiyId(), tag, type, new Date());
+        //添加原图记录
+        IMG sImg = imgService.getImgByURL(attackedImgURL);
+        sImg.setId(record.getId());
+        record.setSIMG(sImg);
+        //做处理（攻击或防御）并填充到record
+        String sImgPath = fileService.getImgPath(attackedImgURL);
+        record.setRIMG(pyScriptService.handleRIMG(sImgPath, tag, type, record.getId()));
+        //然后存入数据库(Record、sIMG、rIMG)
+        recordService.addRecord(record);
         return record;
     }
 }

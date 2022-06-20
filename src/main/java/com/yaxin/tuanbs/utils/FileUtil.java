@@ -24,6 +24,7 @@ public class FileUtil {
         }
         return "Unidentifiable";
     }
+
     public static String getMimeType(InputStream inputStream) {
         try {
             return tika.detect(inputStream);

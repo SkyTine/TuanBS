@@ -3,14 +3,21 @@ package com.yaxin.tuanbs.controller;
 import com.yaxin.tuanbs.entity.Record;
 import com.yaxin.tuanbs.service.DomainService;
 import com.yaxin.tuanbs.service.FileService;
+import com.yaxin.tuanbs.service.RecordService;
+import com.yaxin.tuanbs.utils.TimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author Yaxin
@@ -19,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/TuanAPI")
 public class imgController {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private FileService fileService;
@@ -26,9 +34,15 @@ public class imgController {
     @Autowired
     private DomainService domainService;
 
+    @Autowired
+    private TimeUtil timeUtil;
+
+    @Autowired
+    private RecordService recordService;
+
     @PostMapping("/domain")
     public ResponseEntity<Res> domain(@RequestParam String tag, @RequestParam String type, @RequestBody MultipartFile file){
-//        ResRecord resRecord = new ResRecord();
+        long start = System.currentTimeMillis();
         if(!tag.equals("attack") && !tag.equals("defense")){
             return new ResponseEntity<>(new Res(1001, "error tag!", null), HttpStatus.OK);
         }
@@ -39,8 +53,32 @@ public class imgController {
         if(!fileService.isValidIMG(file)){
             return new ResponseEntity<>(new Res(1003, "error file!", null), HttpStatus.OK);
         }
-        System.out.println("running");
-        return new ResponseEntity<>(new Res(1000, "success", domainService.domain(tag, type, file)), HttpStatus.OK);
+        Record record = domainService.domain(tag, type, file);
+        long end = System.currentTimeMillis();
+        log.info("a domain request: " + "tag=" + tag + " " + "type=" + type + " " + "times=" + timeUtil.calculateSec(start, end));
+        return new ResponseEntity<>(new Res(1000, "success!", record), HttpStatus.OK);
+    }
+
+    @PostMapping("/domainByURL")
+    public ResponseEntity<Res> domain(@RequestParam String tag, @RequestParam String type, @RequestParam String imgURL){
+        String attackedImgPath = fileService.getImgPath(imgURL);
+        long start = System.currentTimeMillis();
+        if(!tag.equals("attack") && !tag.equals("defense")){
+            return new ResponseEntity<>(new Res(1001, "error tag!", null), HttpStatus.OK);
+        }
+        System.out.println(tag + " " + type);
+        if(!new File(attackedImgPath).exists()){
+            return new ResponseEntity<>(new Res(1002, "empty file!", null), HttpStatus.OK);
+        }
+        Record record = domainService.domain(tag, type, imgURL);
+        long end = System.currentTimeMillis();
+        log.info("a domain request: " + "tag=" + tag + " " + "type=" + type + " " + "times=" + timeUtil.calculateSec(start, end));
+        return new ResponseEntity<>(new Res(1000, "success!", record), HttpStatus.OK);
+    }
+
+    @RequestMapping("/getRecentRecords")
+    public ResponseEntity<List<Record>> getRecentRecords(){
+        return new ResponseEntity<>(recordService.getRecentRecord(), HttpStatus.OK);
     }
 
     @RequestMapping("")

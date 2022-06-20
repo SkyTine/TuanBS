@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaxin.tuanbs.mapper.IMGMapper">
+    <cache eviction="LRU" flushInterval="60000" size="1024" readOnly="true"/>
+    <insert id="addSImg">
+        insert into simg values (#{id}, #{url}, #{imgInfo})
+    </insert>
+
+    <select id="getSImgById" resultType="IMGString">
+        select * from simg where id = #{id}
+    </select>
+
+    <select id="getSImgBbyURL" resultType="IMGString">
+        select * from simg where url = #{url}
+    </select>
+
+    <insert id="addRImg">
+        insert into rimg values (#{id}, #{url}, #{imgInfo})
+    </insert>
+
+    <select id="getRImgById" resultType="IMGString">
+        select * from rimg where id = #{id}
+    </select>
+
+    <select id="getRImgBbyURL" resultType="IMGString">
+        select * from rimg where url = #{url}
+    </select>
+
+</mapper>

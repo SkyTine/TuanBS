@@ -47,4 +47,4 @@ static:
   folders:
     pics: pics
   Record:
-    PageSize: 10
+    pageSize: 20

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaxin.tuanbs.mapper.RecordMapper">
+    <cache eviction="LRU" flushInterval="60000" size="1024" readOnly="true"/>
+    <insert id="addRecord" parameterType="Record">
+        insert into record values (#{id}, #{tag}, #{type}, #{createTime})
+    </insert>
+    <select id="getRecordById" parameterType="String" resultType="Record">
+        select * from record where id = #{id}
+    </select>
+
+    <select id="getRecordPaged" resultType="Record">
+        select * from record order by createTime desc
+    </select>
+</mapper>
