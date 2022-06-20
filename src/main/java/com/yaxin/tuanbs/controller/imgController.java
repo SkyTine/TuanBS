@@ -1,6 +1,9 @@
 package com.yaxin.tuanbs.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.yaxin.tuanbs.entity.IMG;
 import com.yaxin.tuanbs.entity.Record;
+import com.yaxin.tuanbs.entity.ResRecord;
 import com.yaxin.tuanbs.service.DomainService;
 import com.yaxin.tuanbs.service.FileService;
 import com.yaxin.tuanbs.service.RecordService;
@@ -11,12 +14,14 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,6 +84,11 @@ public class imgController {
     @RequestMapping("/getRecentRecords")
     public ResponseEntity<List<Record>> getRecentRecords(){
         return new ResponseEntity<>(recordService.getRecentRecord(), HttpStatus.OK);
+    }
+
+    @RequestMapping("getRecentResRecords")
+    public ResponseEntity<List<ResRecord>> getRecentResRecords(){
+        return new ResponseEntity<>(recordService.getRecentResRecord(), HttpStatus.OK);
     }
 
     @RequestMapping("")

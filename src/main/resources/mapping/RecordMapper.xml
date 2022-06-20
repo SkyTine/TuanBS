@@ -12,4 +12,8 @@
     <select id="getRecordPaged" resultType="Record">
         select * from record order by createTime desc
     </select>
+
+    <select id="getResRecordPaged" resultType="ResRecord">
+        select * from record order by createTime desc
+    </select>
 </mapper>
