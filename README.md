@@ -68,13 +68,13 @@
 
 ### **API2：**
 
-* 路由：/domainByURL
+* 路由：/domainByRid
 
 * 概述：对已上传于服务器上的图片进行处理，返回处理结果
 
 * 方法：POST
 
-* 参数及说明：tag、type、imgURL
+* 参数及说明：tag、type、id
 
     * param：tag、type
 
@@ -84,7 +84,7 @@
 
 
 
-    * imgURL：从服务器获取的imgURL
+    * id：从服务器获取的img的id
 
 * 返回信息(JSON)：
 
