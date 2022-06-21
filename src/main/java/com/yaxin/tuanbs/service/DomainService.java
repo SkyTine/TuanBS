@@ -59,18 +59,18 @@ public class DomainService {
      * 使用服务器图片做处理
      * @param tag 攻击或防御
      * @param type 类型
-     * @param attackedImgURL 待处理图片的url
+     * @param id 待处理图片的id
      * @return 存入数据库的record
      */
-    public Record domain(String tag, String type, String attackedImgURL){
+    public Record domain(String tag, String type, String id){
         //新建Record
         Record record = new Record(DiyId.getTimeDiyId(), tag, type, new Date());
-        //添加原图记录
-        IMG sImg = imgService.getImgByURL(attackedImgURL);
+        //添加传入结果图做原图记录
+        IMG sImg = imgService.getRImgById(id);
         sImg.setId(record.getId());
         record.setSIMG(sImg);
         //做处理（攻击或防御）并填充到record
-        String sImgPath = fileService.getImgPath(attackedImgURL);
+        String sImgPath = fileService.getImgPath(sImg.getUrl());
         record.setRIMG(pyScriptService.handleRIMG(sImgPath, tag, type, record.getId()));
         //然后存入数据库(Record、sIMG、rIMG)
         recordService.addRecord(record);

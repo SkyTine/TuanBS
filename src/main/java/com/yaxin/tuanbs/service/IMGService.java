@@ -30,12 +30,4 @@ public class IMGService {
     public IMG getRImgById(String id){
         return new IMG(imgMapper.getRImgById(id));
     }
-
-    public IMG getImgByURL(String attackedImgURL){
-        IMGString resImg = imgMapper.getRImgBbyURL(attackedImgURL);
-        if(resImg == null || resImg.getId() == null){
-            resImg = imgMapper.getSImgBbyURL(attackedImgURL);
-        }
-        return new IMG(resImg);
-    }
 }

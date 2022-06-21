@@ -10,20 +10,12 @@
         select * from simg where id = #{id}
     </select>
 
-    <select id="getSImgBbyURL" resultType="IMGString">
-        select * from simg where url = #{url}
-    </select>
-
     <insert id="addRImg">
         insert into rimg values (#{id}, #{url}, #{imgInfo})
     </insert>
 
     <select id="getRImgById" resultType="IMGString">
         select * from rimg where id = #{id}
-    </select>
-
-    <select id="getRImgBbyURL" resultType="IMGString">
-        select * from rimg where url = #{url}
     </select>
 
 </mapper>

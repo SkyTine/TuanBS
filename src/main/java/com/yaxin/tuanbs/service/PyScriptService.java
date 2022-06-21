@@ -144,8 +144,9 @@ public class PyScriptService {
             case "ens4_adv_inception_v3":
                 targetDefense = "defense3.py";
                 break;
-            case "fuzzy_integration":
+            case "BF_adv":
             default:
+                type = "BF_adv";
                 targetDefense = "defense4.py";
                 break;
         }
@@ -157,7 +158,7 @@ public class PyScriptService {
             case "ens4_adv_inception_v3":
                 list = CommandUtil.executeCommand(cmd.toArray(new String[0]), CATEGORY);
                 break;
-            case "fuzzy_integration":
+            case "BF_adv":
             default:
                 list = CommandUtil.executeCommand(cmd.toArray(new String[0]), RES_LINES);
                 break;

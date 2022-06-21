@@ -4,6 +4,8 @@ import com.yaxin.tuanbs.entity.IMGString;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Yaxin
  * @date 2022/6/19 21:34
@@ -18,8 +20,4 @@ public interface IMGMapper {
     IMGString getSImgById(String id);
 
     IMGString getRImgById(String id);
-
-    IMGString getSImgBbyURL(String url);
-
-    IMGString getRImgBbyURL(String url);
 }
